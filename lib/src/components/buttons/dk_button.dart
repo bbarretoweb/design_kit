@@ -4,7 +4,7 @@ enum _DkButtonType { filled, text, outlined }
 
 /// A highly accessible, theme-agnostic button component wrapping Material 3.
 /// Inherits sizing, typography and colors from [Theme.of(context)].
-class DkButton extends StatelessWidget {
+class DkButton extends StatefulWidget {
   /// Internal constructor for standardizing buttons.
   const DkButton._({
     required this.label,
@@ -62,6 +62,30 @@ class DkButton extends StatelessWidget {
   final _DkButtonType _type;
 
   @override
+  State<DkButton> createState() => _DkButtonState();
+}
+
+class _DkButtonState extends State<DkButton> {
+  bool _isHovered = false;
+  bool _isPressed = false;
+
+  void _handleTapDown(TapDownDetails details) {
+    if (widget.isLoading || widget.onPressed == null) return;
+    setState(() => _isPressed = true);
+  }
+
+  void _handleTapUp(TapUpDetails details) {
+    if (widget.isLoading || widget.onPressed == null) return;
+    setState(() => _isPressed = false);
+    widget.onPressed?.call();
+  }
+
+  void _handleTapCancel() {
+    if (widget.isLoading || widget.onPressed == null) return;
+    setState(() => _isPressed = false);
+  }
+
+  @override
   Widget build(BuildContext context) {
     // EAA / WCAG requires minimum 44x44 points touch target area.
     const minimumConstraints = BoxConstraints(
@@ -69,9 +93,15 @@ class DkButton extends StatelessWidget {
       minHeight: 44,
     );
 
-    final effectiveOnPressed = isLoading ? null : onPressed;
+    // Using dummy function so internal Material Button doesn't invoke
+    // the action, as we are handling the invocation exclusively
+    // through our own GestureDetector.
+    final effectiveOnPressed = (widget.isLoading || widget.onPressed == null)
+        ? null
+        : () {};
+    final disableAnimations = MediaQuery.disableAnimationsOf(context);
 
-    final content = isLoading
+    final content = widget.isLoading
         ? const SizedBox(
             width: 24,
             height: 24,
@@ -79,27 +109,73 @@ class DkButton extends StatelessWidget {
               strokeWidth: 2,
             ),
           )
-        : label;
+        : widget.label;
+
+    final theme = Theme.of(context);
+    final buttonCore = ConstrainedBox(
+      constraints: minimumConstraints,
+      child: switch (widget._type) {
+        _DkButtonType.filled => FilledButton(
+          onPressed: effectiveOnPressed,
+          child: content,
+        ),
+        _DkButtonType.text => TextButton(
+          onPressed: effectiveOnPressed,
+          child: content,
+        ),
+        _DkButtonType.outlined => OutlinedButton(
+          onPressed: effectiveOnPressed,
+          child: content,
+        ),
+      },
+    );
 
     return Semantics(
       button: true,
-      enabled: effectiveOnPressed != null,
-      child: ConstrainedBox(
-        constraints: minimumConstraints,
-        child: switch (_type) {
-          _DkButtonType.filled => FilledButton(
-            onPressed: effectiveOnPressed,
-            child: content,
+      enabled: widget.onPressed != null && !widget.isLoading,
+      child: MouseRegion(
+        onEnter: (_) => setState(() => _isHovered = true),
+        onExit: (_) => setState(() => _isHovered = false),
+        cursor: (widget.onPressed != null && !widget.isLoading)
+            ? SystemMouseCursors.click
+            : SystemMouseCursors.basic,
+        child: GestureDetector(
+          onTapDown: _handleTapDown,
+          onTapUp: _handleTapUp,
+          onTapCancel: _handleTapCancel,
+          child: AnimatedScale(
+            scale: _isPressed && !disableAnimations ? 0.95 : 1.0,
+            duration: disableAnimations
+                ? Duration.zero
+                : const Duration(milliseconds: 150),
+            curve: Curves.easeOutBack,
+            child: AnimatedContainer(
+              duration: disableAnimations
+                  ? Duration.zero
+                  : const Duration(milliseconds: 200),
+              curve: Curves.easeOut,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(999),
+                boxShadow: [
+                  if (_isHovered &&
+                      !_isPressed &&
+                      widget._type == _DkButtonType.filled)
+                    BoxShadow(
+                      color: theme.colorScheme.primary.withAlpha(60),
+                      blurRadius: 12,
+                      spreadRadius: 2,
+                      offset: const Offset(0, 4),
+                    ),
+                ],
+              ),
+              child: AbsorbPointer(
+                child: ExcludeSemantics(
+                  child: buttonCore,
+                ),
+              ),
+            ),
           ),
-          _DkButtonType.text => TextButton(
-            onPressed: effectiveOnPressed,
-            child: content,
-          ),
-          _DkButtonType.outlined => OutlinedButton(
-            onPressed: effectiveOnPressed,
-            child: content,
-          ),
-        },
+        ),
       ),
     );
   }

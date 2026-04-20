@@ -11,6 +11,7 @@ class DkDivider extends StatelessWidget {
     this.axis = Axis.horizontal,
     this.thickness = 1.0,
     this.indent,
+    this.endIndent,
   });
 
   /// An optional text widget injected centrally across the lines.
@@ -22,8 +23,11 @@ class DkDivider extends StatelessWidget {
   /// Physical representation thickness of the divider lines.
   final double thickness;
 
-  /// Margins at the trailing and leading bounds of the divider component.
+  /// Margins at the leading bounds of the divider component.
   final double? indent;
+
+  /// Margins at the trailing bounds of the divider component.
+  final double? endIndent;
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +35,7 @@ class DkDivider extends StatelessWidget {
     final spacing = theme.extension<DkSpacing>() ?? const DkSpacing();
 
     final safeIndent = indent ?? spacing.md;
+    final safeEndIndent = endIndent ?? spacing.md;
     final color = theme.colorScheme.outlineVariant;
 
     final Widget dividerWidget;
@@ -43,18 +48,27 @@ class DkDivider extends StatelessWidget {
               color: color,
               thickness: thickness,
               indent: safeIndent,
-              endIndent: label != null ? spacing.sm : safeIndent,
+              endIndent: label != null ? spacing.sm : 0,
             ),
           ),
-          ?label,
-          Expanded(
-            child: Divider(
-              color: color,
-              thickness: thickness,
-              indent: label != null ? spacing.sm : 0,
-              endIndent: safeIndent,
+          if (label != null) ...[
+            Flexible(child: label!),
+            Expanded(
+              child: Divider(
+                color: color,
+                thickness: thickness,
+                indent: spacing.sm,
+                endIndent: safeEndIndent,
+              ),
             ),
-          ),
+          ],
+          if (label == null)
+            const SizedBox(
+              // Placeholder to complete the row if no label, 
+              // but Row already has Expanded. 
+              // Wait, if no label, we just need one Expanded Divider.
+              width: 0, 
+            ),
         ],
       );
     } else {
@@ -65,19 +79,43 @@ class DkDivider extends StatelessWidget {
               color: color,
               thickness: thickness,
               indent: safeIndent,
-              endIndent: label != null ? spacing.sm : safeIndent,
+              endIndent: label != null ? spacing.sm : 0,
             ),
           ),
-          ?label,
-          Expanded(
-            child: VerticalDivider(
-              color: color,
-              thickness: thickness,
-              indent: label != null ? spacing.sm : 0,
-              endIndent: safeIndent,
+          if (label != null) ...[
+            Flexible(child: label!),
+            Expanded(
+              child: VerticalDivider(
+                color: color,
+                thickness: thickness,
+                indent: spacing.sm,
+                endIndent: safeEndIndent,
+              ),
             ),
-          ),
+          ],
         ],
+      );
+    }
+
+    // Special case for horizontal divider without label: use a single
+    // Divider widget
+    if (label == null && axis == Axis.horizontal) {
+      return Divider(
+        color: color,
+        thickness: thickness,
+        indent: safeIndent,
+        endIndent: safeEndIndent,
+      );
+    }
+
+    // Special case for vertical divider without label: use a single
+    // VerticalDivider widget
+    if (label == null && axis == Axis.vertical) {
+      return VerticalDivider(
+        color: color,
+        thickness: thickness,
+        indent: safeIndent,
+        endIndent: safeEndIndent,
       );
     }
 

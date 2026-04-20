@@ -19,20 +19,28 @@ void main() {
   }
 
   group('DkDivider', () {
-    testWidgets('axis: horizontal -> exactly two Divider widgets in tree', (
+    testWidgets(
+      'axis: horizontal -> exactly one Divider widget in tree when no label', (
       tester,
     ) async {
       await tester.pumpWidget(buildApp(const DkDivider()));
-      expect(find.byType(Divider), findsNWidgets(2));
+      expect(find.byType(Divider), findsOneWidget);
     });
 
     testWidgets(
-      'axis: vertical -> exactly two VerticalDivider widgets in tree',
+      'axis: vertical -> exactly one VerticalDivider widget in tree when '
+      'no label',
       (tester) async {
         await tester.pumpWidget(buildApp(const DkDivider(axis: Axis.vertical)));
-        expect(find.byType(VerticalDivider), findsNWidgets(2));
+        expect(find.byType(VerticalDivider), findsOneWidget);
       },
     );
+
+    testWidgets('label: provided -> exactly two widgets in tree',
+        (tester) async {
+      await tester.pumpWidget(buildApp(const DkDivider(label: Text('OR'))));
+      expect(find.byType(Divider), findsNWidgets(2));
+    });
 
     testWidgets("label: 'OR' provided -> Text('OR') present", (tester) async {
       await tester.pumpWidget(buildApp(const DkDivider(label: Text('OR'))));

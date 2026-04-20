@@ -64,37 +64,27 @@ class DkChip extends StatelessWidget {
 
     switch (variant) {
       case DkChipVariant.suggestion:
-        chip = Semantics(
-          button: true,
-          child: ActionChip(
-            label: label,
-            onPressed: onPressed,
-            avatar: avatar,
-            shape: shape,
-          ),
+        chip = ActionChip(
+          label: label,
+          onPressed: onPressed,
+          avatar: avatar,
+          shape: shape,
         );
       case DkChipVariant.filter:
-        chip = Semantics(
-          button: true,
+        chip = FilterChip(
+          label: label,
           selected: selected,
-          child: FilterChip(
-            label: label,
-            selected: selected,
-            onSelected: (_) => onPressed?.call(),
-            avatar: avatar,
-            shape: shape,
-          ),
+          onSelected: (_) => onPressed?.call(),
+          avatar: avatar,
+          shape: shape,
         );
       case DkChipVariant.input:
-        chip = Semantics(
-          button: true,
-          child: InputChip(
-            label: label,
-            onPressed: onPressed,
-            onDeleted: onDeleted,
-            avatar: avatar,
-            shape: shape,
-          ),
+        chip = InputChip(
+          label: label,
+          onPressed: onPressed,
+          onDeleted: onDeleted,
+          avatar: avatar,
+          shape: shape,
         );
     }
 

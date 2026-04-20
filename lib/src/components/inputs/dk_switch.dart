@@ -54,15 +54,16 @@ class DkSwitch extends StatelessWidget {
       coreNode = switchComponent;
     }
 
-    return Semantics(
-      toggled: value,
-      label: semanticLabel,
-      child: ConstrainedBox(
-        constraints: minimumConstraints,
-        child: Center(
-          widthFactor: 1,
-          heightFactor: 1,
-          child: coreNode,
+    return ConstrainedBox(
+      constraints: minimumConstraints,
+      child: Center(
+        widthFactor: 1,
+        heightFactor: 1,
+        child: MergeSemantics(
+          child: Semantics(
+            label: semanticLabel,
+            child: coreNode,
+          ),
         ),
       ),
     );

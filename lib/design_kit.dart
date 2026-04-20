@@ -1,11 +1,17 @@
 export 'src/components/buttons/dk_button.dart';
+export 'src/components/buttons/dk_glass_icon_button.dart';
 export 'src/components/chips/dk_chip.dart';
 export 'src/components/display/dk_avatar.dart';
+export 'src/components/display/dk_project_card.dart';
+export 'src/components/display/dk_section_header.dart';
+export 'src/components/display/dk_tag.dart';
 export 'src/components/feedback/dk_badge.dart';
 export 'src/components/feedback/dk_snackbar.dart';
 export 'src/components/inputs/dk_switch.dart';
 export 'src/components/inputs/dk_text_field.dart';
 export 'src/components/layout/dk_divider.dart';
+export 'src/components/layout/dk_glass_container.dart';
+export 'src/components/layout/dk_grid.dart';
 export 'src/theme/dk_brand_theme.dart';
 export 'src/theme/dk_theme.dart';
 export 'src/theme/dk_theme_extensions.dart';

@@ -15,6 +15,7 @@ class DkTextField extends StatelessWidget {
     this.keyboardType,
     this.textInputAction,
     this.onChanged,
+    this.maxLines,
   });
 
   /// Optional controller to manage the text being edited.
@@ -39,6 +40,9 @@ class DkTextField extends StatelessWidget {
   /// Provides changes of the text input.
   final ValueChanged<String>? onChanged;
 
+  /// The maximum number of lines the text field can have.
+  final int? maxLines;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -50,54 +54,51 @@ class DkTextField extends StatelessWidget {
       minWidth: 44,
     );
 
-    return Semantics(
-      textField: true,
-      label: hintText ?? 'Text form field',
-      child: ConstrainedBox(
-        constraints: minimumConstraints,
-        child: TextFormField(
-          controller: controller,
-          obscureText: obscureText,
-          keyboardType: keyboardType,
-          textInputAction: textInputAction,
-          onChanged: onChanged,
-          decoration: InputDecoration(
-            hintText: hintText,
-            errorText: errorText,
-            border: OutlineInputBorder(
-              borderRadius: radii.md,
+    return ConstrainedBox(
+      constraints: minimumConstraints,
+      child: TextFormField(
+        controller: controller,
+        obscureText: obscureText,
+        keyboardType: keyboardType,
+        textInputAction: textInputAction,
+        onChanged: onChanged,
+        maxLines: obscureText ? 1 : maxLines,
+        decoration: InputDecoration(
+          hintText: hintText,
+          errorText: errorText,
+          border: OutlineInputBorder(
+            borderRadius: radii.md,
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: radii.md,
+            borderSide: BorderSide(
+              color: theme.colorScheme.outline,
             ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: radii.md,
-              borderSide: BorderSide(
-                color: theme.colorScheme.outline,
-              ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: radii.md,
+            borderSide: BorderSide(
+              color: theme.colorScheme.primary,
+              width: 2,
             ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: radii.md,
-              borderSide: BorderSide(
-                color: theme.colorScheme.primary,
-                width: 2,
-              ),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderRadius: radii.md,
+            borderSide: BorderSide(
+              color: theme.colorScheme.error,
             ),
-            errorBorder: OutlineInputBorder(
-              borderRadius: radii.md,
-              borderSide: BorderSide(
-                color: theme.colorScheme.error,
-              ),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderRadius: radii.md,
+            borderSide: BorderSide(
+              color: theme.colorScheme.error,
+              width: 2,
             ),
-            focusedErrorBorder: OutlineInputBorder(
-              borderRadius: radii.md,
-              borderSide: BorderSide(
-                color: theme.colorScheme.error,
-                width: 2,
-              ),
-            ),
-            // Padding matching spacing fundamentals
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 12,
-            ),
+          ),
+          // Padding matching spacing fundamentals
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 12,
           ),
         ),
       ),
