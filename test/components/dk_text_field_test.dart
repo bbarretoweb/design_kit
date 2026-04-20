@@ -3,45 +3,46 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  group('DkTextField Component Tests', () {
-    testWidgets('renders accurately and displays hintText', (tester) async {
+  Widget buildApp(Widget child, {DkRadii? customRadii}) {
+    return MaterialApp(
+      theme: DkTheme.build(
+        brightness: Brightness.light,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        textTheme: DkTypography.buildTextTheme(
+          fontFamily: 'Roboto',
+          displayColor: Colors.black,
+          bodyColor: Colors.black,
+        ),
+        radii: customRadii,
+      ),
+      home: Scaffold(body: child),
+    );
+  }
+
+  group('DkTextField', () {
+    testWidgets("errorText: 'Required' -> Text('Required') visible", (
+      tester,
+    ) async {
       await tester.pumpWidget(
-        const MaterialApp(
-          home: Scaffold(
-            body: DkTextField(
-              hintText: 'Enter your email',
-            ),
+        buildApp(
+          const DkTextField(
+            hintText: 'Enter value',
+            errorText: 'Required',
           ),
         ),
       );
 
-      expect(find.byType(TextFormField), findsOneWidget);
-      expect(find.text('Enter your email'), findsOneWidget);
+      expect(find.text('Required'), findsOneWidget);
     });
 
-    testWidgets('displays error text dynamically', (tester) async {
+    testWidgets('obscureText: true -> EditableText.obscureText == true', (
+      tester,
+    ) async {
       await tester.pumpWidget(
-        const MaterialApp(
-          home: Scaffold(
-            body: DkTextField(
-              hintText: 'Enter your email',
-              errorText: 'Invalid email address',
-            ),
-          ),
-        ),
-      );
-
-      expect(find.text('Invalid email address'), findsOneWidget);
-    });
-
-    testWidgets('handles secure text entry properly', (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: Scaffold(
-            body: DkTextField(
-              hintText: 'Enter password',
-              obscureText: true,
-            ),
+        buildApp(
+          const DkTextField(
+            hintText: 'Password',
+            obscureText: true,
           ),
         ),
       );
@@ -49,5 +50,45 @@ void main() {
       final textField = tester.widget<TextField>(find.byType(TextField));
       expect(textField.obscureText, isTrue);
     });
+
+    testWidgets("Typing 'hello' -> onChanged called with 'hello'", (
+      tester,
+    ) async {
+      String? typedText;
+      await tester.pumpWidget(
+        buildApp(
+          DkTextField(
+            hintText: 'Enter text',
+            onChanged: (val) => typedText = val,
+          ),
+        ),
+      );
+
+      await tester.enterText(find.byType(DkTextField), 'hello');
+      expect(typedText, 'hello');
+    });
+
+    testWidgets(
+      'DkRadii injected via theme -> OutlineInputBorder uses that radius',
+      (tester) async {
+        const radii = DkRadii(md: BorderRadius.all(Radius.circular(20)));
+        await tester.pumpWidget(
+          buildApp(
+            const DkTextField(
+              hintText: 'Enter value',
+            ),
+            customRadii: radii,
+          ),
+        );
+
+        final textField = tester.widget<TextField>(find.byType(TextField));
+        final decoration = textField.decoration!;
+        final border = decoration.border! as OutlineInputBorder;
+        expect(
+          border.borderRadius,
+          const BorderRadius.all(Radius.circular(20)),
+        );
+      },
+    );
   });
 }

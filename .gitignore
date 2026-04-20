@@ -3,7 +3,11 @@
 *.log
 *.pyc
 *.swp
+
 .DS_Store
+# Antigravity
+.antigravityignore
+
 .atom/
 .buildlog/
 .history

@@ -1,5 +1,14 @@
 export 'src/components/buttons/dk_button.dart';
+export 'src/components/chips/dk_chip.dart';
+export 'src/components/display/dk_avatar.dart';
+export 'src/components/feedback/dk_badge.dart';
+export 'src/components/feedback/dk_snackbar.dart';
+export 'src/components/inputs/dk_switch.dart';
 export 'src/components/inputs/dk_text_field.dart';
+export 'src/components/layout/dk_divider.dart';
+export 'src/theme/dk_brand_theme.dart';
 export 'src/theme/dk_theme.dart';
 export 'src/theme/dk_theme_extensions.dart';
 export 'src/theme/dk_typography.dart';
+export 'src/theme/examples/acme_brand_theme.dart';
+export 'src/theme/examples/betacorp_brand_theme.dart';
