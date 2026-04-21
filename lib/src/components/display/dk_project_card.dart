@@ -18,6 +18,7 @@ class DkProjectCard extends StatefulWidget {
     this.callToAction,
     this.onPressed,
     this.imageSemanticLabel,
+    this.imageAlignment = Alignment.center,
     super.key,
   });
 
@@ -26,6 +27,9 @@ class DkProjectCard extends StatefulWidget {
 
   /// Screen reader label for the [heroImage].
   final String? imageSemanticLabel;
+
+  /// Alignment of the [heroImage], useful for parallax effects.
+  final AlignmentGeometry imageAlignment;
 
   /// The primary project title.
   final String title;
@@ -68,72 +72,103 @@ class _DkProjectCardState extends State<DkProjectCard> {
 
     final disableAnimations = MediaQuery.disableAnimationsOf(context);
 
-    Widget cardContent = Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      mainAxisSize: MainAxisSize.min,
+    Widget cardContent = Stack(
+      fit: StackFit.expand,
       children: [
         if (widget.heroImage != null)
           Semantics(
             image: true,
             label: widget.imageSemanticLabel ?? 'Project image',
-            child: AspectRatio(
-              aspectRatio: 16 / 9,
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: widget.heroImage!,
-                    fit: BoxFit.cover,
-                  ),
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: widget.heroImage!,
+                  fit: BoxFit.cover,
+                  alignment: widget.imageAlignment,
                 ),
               ),
             ),
           ),
-        Padding(
-          padding: EdgeInsets.all(spacing.md),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                widget.title,
-                style: theme.textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: theme.colorScheme.onSurface,
+        if (widget.heroImage != null)
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: 300,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.transparent,
+                    Colors.black.withAlpha(220),
+                  ],
                 ),
               ),
-              if (widget.subtitle != null && widget.subtitle!.isNotEmpty) ...[
-                SizedBox(height: spacing.xs),
-                Text(
-                  widget.subtitle!,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
-                    fontWeight: FontWeight.w500,
-                  ),
+            ),
+          ),
+        Positioned.fill(
+          child: Align(
+            alignment: Alignment.bottomLeft,
+            child: SingleChildScrollView(
+              padding: EdgeInsets.all(spacing.lg),
+              child: Theme(
+                data: ThemeData.dark(),
+                child: Builder(
+                  builder: (context) {
+                    final darkTheme = Theme.of(context);
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          widget.title,
+                          style: darkTheme.textTheme.headlineSmall?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: darkTheme.colorScheme.onSurface,
+                          ),
+                        ),
+                        if (widget.subtitle != null &&
+                            widget.subtitle!.isNotEmpty) ...[
+                          SizedBox(height: spacing.xs),
+                          Text(
+                            widget.subtitle!,
+                            style: darkTheme.textTheme.bodyLarge?.copyWith(
+                              color: darkTheme.colorScheme.primary,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                        if (widget.description != null &&
+                            widget.description!.isNotEmpty) ...[
+                          SizedBox(height: spacing.sm),
+                          Text(
+                            widget.description!,
+                            style: darkTheme.textTheme.bodyMedium?.copyWith(
+                              color: darkTheme.colorScheme.onSurfaceVariant
+                                  .withAlpha(200),
+                            ),
+                          ),
+                        ],
+                        if (widget.tags.isNotEmpty) ...[
+                          SizedBox(height: spacing.md),
+                          Wrap(
+                            spacing: spacing.xs,
+                            runSpacing: spacing.xs,
+                            children: widget.tags,
+                          ),
+                        ],
+                        if (widget.callToAction != null) ...[
+                          SizedBox(height: spacing.lg),
+                          widget.callToAction!,
+                        ],
+                      ],
+                    );
+                  },
                 ),
-              ],
-              if (widget.description != null &&
-                  widget.description!.isNotEmpty) ...[
-                SizedBox(height: spacing.sm),
-                Text(
-                  widget.description!,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
-                  ),
-                ),
-              ],
-              if (widget.tags.isNotEmpty) ...[
-                SizedBox(height: spacing.md),
-                Wrap(
-                  spacing: spacing.xs,
-                  runSpacing: spacing.xs,
-                  children: widget.tags,
-                ),
-              ],
-              if (widget.callToAction != null) ...[
-                SizedBox(height: spacing.md),
-                widget.callToAction!,
-              ],
-            ],
+              ),
+            ),
           ),
         ),
       ],
