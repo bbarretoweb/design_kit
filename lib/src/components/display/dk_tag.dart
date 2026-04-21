@@ -11,12 +11,16 @@ class DkTag extends StatelessWidget {
   const DkTag({
     required this.label,
     super.key,
+    this.icon,
     this.backgroundColor,
     this.textColor,
   });
 
   /// The text content to display.
   final String label;
+
+  /// Optional icon to display to the left of the label.
+  final Widget? icon;
 
   /// Background color of the tag. Falls back to [ColorScheme.primaryContainer].
   final Color? backgroundColor;
@@ -47,12 +51,27 @@ class DkTag extends StatelessWidget {
             horizontal: spacing.sm,
             vertical: spacing.xs,
           ),
-          child: Text(
-            label,
-            style: theme.textTheme.labelMedium?.copyWith(
-              color: fg,
-              fontWeight: FontWeight.w600,
-            ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (icon != null) ...[
+                IconTheme.merge(
+                  data: IconThemeData(
+                    size: 16,
+                    color: fg,
+                  ),
+                  child: icon!,
+                ),
+                SizedBox(width: spacing.xs),
+              ],
+              Text(
+                label,
+                style: theme.textTheme.labelMedium?.copyWith(
+                  color: fg,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
           ),
         ),
       ),
