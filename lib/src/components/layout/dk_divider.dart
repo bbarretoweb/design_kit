@@ -47,28 +47,23 @@ class DkDivider extends StatelessWidget {
             child: Divider(
               color: color,
               thickness: thickness,
-              indent: safeIndent,
-              endIndent: label != null ? spacing.sm : 0,
+              indent: 0,
+              endIndent: 0,
             ),
           ),
           if (label != null) ...[
-            Flexible(child: label!),
+            SizedBox(width: spacing.sm),
+            label!,
+            SizedBox(width: spacing.sm),
             Expanded(
               child: Divider(
                 color: color,
                 thickness: thickness,
-                indent: spacing.sm,
-                endIndent: safeEndIndent,
+                indent: 0,
+                endIndent: 0,
               ),
             ),
           ],
-          if (label == null)
-            const SizedBox(
-              // Placeholder to complete the row if no label, 
-              // but Row already has Expanded. 
-              // Wait, if no label, we just need one Expanded Divider.
-              width: 0, 
-            ),
         ],
       );
     } else {
@@ -119,6 +114,12 @@ class DkDivider extends StatelessWidget {
       );
     }
 
-    return dividerWidget;
+    // For labeled dividers, apply indent/endIndent as outer padding so the
+    // entire component (lines + label) is inset symmetrically.
+    final outerPadding = axis == Axis.horizontal
+        ? EdgeInsets.only(left: safeIndent, right: safeEndIndent)
+        : EdgeInsets.only(top: safeIndent, bottom: safeEndIndent);
+
+    return Padding(padding: outerPadding, child: dividerWidget);
   }
 }
