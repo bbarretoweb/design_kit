@@ -22,19 +22,19 @@ void main() {
     );
 
     testWidgets(
-      'BetaCorpBrandTheme().light() contains DkRadii with md == '
+      'BiomeBrandTheme().light() contains DkRadii with md == '
       'BorderRadius.circular(16)',
       (tester) async {
-        final theme = const BetaCorpBrandTheme().light();
+        final theme = const BiomeBrandTheme().light();
         final radii = theme.extension<DkRadii>();
         expect(radii?.md, const BorderRadius.all(Radius.circular(16)));
       },
     );
 
     testWidgets(
-      'BetaCorpBrandTheme().light() contains DkSpacing with md == 20.0',
+      'BiomeBrandTheme().light() contains DkSpacing with md == 20.0',
       (tester) async {
-        final theme = const BetaCorpBrandTheme().light();
+        final theme = const BiomeBrandTheme().light();
         final spacing = theme.extension<DkSpacing>();
         expect(spacing?.md, 20.0);
       },
@@ -44,13 +44,13 @@ void main() {
       tester,
     ) async {
       final acme = const AcmeBrandTheme().light();
-      final beta = const BetaCorpBrandTheme().light();
+      final beta = const BiomeBrandTheme().light();
       expect(acme.useMaterial3, isTrue);
       expect(beta.useMaterial3, isTrue);
     });
 
     testWidgets(
-      'Swap AcmeBrandTheme for BetaCorpBrandTheme -> DkButton renders '
+      'Swap AcmeBrandTheme for BiomeBrandTheme -> DkButton renders '
       'without error',
       (tester) async {
         await tester.pumpWidget(
@@ -68,7 +68,7 @@ void main() {
 
         await tester.pumpWidget(
           MaterialApp(
-            theme: const BetaCorpBrandTheme().light(),
+            theme: const BiomeBrandTheme().light(),
             home: Scaffold(
               body: DkButton.filled(
                 label: const Text('Beta'),

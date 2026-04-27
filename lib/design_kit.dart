@@ -17,4 +17,4 @@ export 'src/theme/dk_theme.dart';
 export 'src/theme/dk_theme_extensions.dart';
 export 'src/theme/dk_typography.dart';
 export 'src/theme/examples/acme_brand_theme.dart';
-export 'src/theme/examples/betacorp_brand_theme.dart';
+export 'src/theme/examples/biome_brand_theme.dart';

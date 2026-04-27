@@ -4,13 +4,13 @@ import 'package:design_kit/src/theme/dk_theme_extensions.dart';
 import 'package:design_kit/src/theme/dk_typography.dart';
 import 'package:flutter/material.dart';
 
-/// Reference implementation of [DkBrandTheme] for BetaCorp.
+/// Reference implementation of [DkBrandTheme] for Biome.
 ///
 /// Rounded radii and generous spacing communicate approachability and
 /// modernity — contrasting deliberately with AcmeBrandTheme's rigidity.
-final class BetaCorpBrandTheme implements DkBrandTheme {
-  /// Creates the BetaCorp brand theme implementation.
-  const BetaCorpBrandTheme();
+final class BiomeBrandTheme implements DkBrandTheme {
+  /// Creates the Biome brand theme implementation.
+  const BiomeBrandTheme();
 
   static const _seed = Color(0xFF00C896);
 
