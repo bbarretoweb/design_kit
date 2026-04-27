@@ -16,6 +16,8 @@ class DkTextField extends StatelessWidget {
     this.textInputAction,
     this.onChanged,
     this.maxLines,
+    this.validator,
+    this.autovalidateMode,
   });
 
   /// Optional controller to manage the text being edited.
@@ -43,6 +45,12 @@ class DkTextField extends StatelessWidget {
   /// The maximum number of lines the text field can have.
   final int? maxLines;
 
+  /// Optional validator for form validation.
+  final FormFieldValidator<String>? validator;
+
+  /// Controls how the form field should automatically validate itself.
+  final AutovalidateMode? autovalidateMode;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -63,6 +71,8 @@ class DkTextField extends StatelessWidget {
         textInputAction: textInputAction,
         onChanged: onChanged,
         maxLines: obscureText ? 1 : maxLines,
+        validator: validator,
+        autovalidateMode: autovalidateMode,
         decoration: InputDecoration(
           hintText: hintText,
           errorText: errorText,
